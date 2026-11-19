@@ -1,0 +1,38 @@
+[project]
+name = "backtester"
+version = "0.1.0"
+description = "Backtest strategy analyzer: Parquet + DuckDB + Polars data layer, portable numpy simulation kernel."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "duckdb>=1.1",
+    "numpy>=2.0",
+    "polars>=1.10",
+    "pyarrow>=17",
+]
+
+[project.optional-dependencies]
+yahoo = ["yfinance>=0.2.50"]
+
+[project.scripts]
+backtester = "backtester.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.7"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/backtester"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "NPY"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
