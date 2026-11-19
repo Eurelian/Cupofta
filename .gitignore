@@ -157,4 +157,6 @@ __pycache__/
 
 # Market data cache (re-fetch with `backtester fetch`)
 data/*.parquet
+data/*.duckdb
+data/*.duckdb.wal
 *.csv

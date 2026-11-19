@@ -69,7 +69,9 @@ _PCT = {"total_return", "cagr", "volatility", "max_drawdown", "exposure", "win_r
 def format_metrics(m: dict) -> str:
     lines = []
     for k, v in m.items():
-        if k in _PCT:
+        if v is None:
+            s = f"{'–':>10}"
+        elif k in _PCT:
             s = f"{v:>10.2%}"
         elif isinstance(v, int):
             s = f"{v:>10d}"

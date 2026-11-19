@@ -120,3 +120,19 @@ def synthetic_bars(
             "volume": rng.integers(1_000_000, 5_000_000, n).astype(float),
         }
     )
+
+
+def cached_symbols(data_dir: Path = DEFAULT_DATA_DIR) -> pl.DataFrame:
+    """Symbols with cached Parquet data, with their date range and bar count."""
+    files = sorted(Path(data_dir).glob("*.parquet"))
+    if not files:
+        return pl.DataFrame(
+            schema={"symbol": pl.String, "first": pl.Date, "last": pl.Date, "bars": pl.Int64}
+        )
+    with duckdb.connect() as con:
+        return con.sql(
+            """SELECT upper(regexp_extract(filename, '([^/\\\\]+)\\.parquet$', 1)) AS symbol,
+                      min(date)::DATE AS first, max(date)::DATE AS last, count(*) AS bars
+               FROM read_parquet(?, filename = true) GROUP BY ALL ORDER BY symbol""",
+            params=[[str(f) for f in files]],
+        ).pl()
